@@ -350,4 +350,5 @@ MigrationBackup/
 .ionide/
 
 # Ignore Sqlite db
+*.db
 *.db*
