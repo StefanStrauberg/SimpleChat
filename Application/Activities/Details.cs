@@ -22,7 +22,8 @@ namespace Application.Activities
             public Handler(DataContext context)
                 => _context = context;
 
-            async Task<Activity> IRequestHandler<Query, Activity>.Handle(Query request, CancellationToken cancellationToken)
+            async Task<Activity> IRequestHandler<Query, Activity>.Handle(Query request,
+                                                                         CancellationToken cancellationToken)
             {
                 return await _context.Activities
                                      .AsNoTracking()

@@ -1,3 +1,4 @@
+using System.Threading;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,8 +13,8 @@ namespace API.Controllers
     {
         [HttpGet]
         [ProducesResponseType(typeof(List<Activity>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetActivities()
-            => Ok(await Mediator.Send(new List.Query()));
+        public async Task<IActionResult> GetActivities(CancellationToken ct)
+            => Ok(await Mediator.Send(new List.Query(), ct));
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(List<Activity>), StatusCodes.Status200OK)]

@@ -20,7 +20,8 @@ namespace Application.Activities
             public Handler(DataContext context)
                 => _context = context;
 
-            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request, CancellationToken cancellationToken)
+            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request,
+                                                                   CancellationToken cancellationToken)
             {
                 _context.Activities.Add(request.Activity);
                 await _context.SaveChangesAsync();

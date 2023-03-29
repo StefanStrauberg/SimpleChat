@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +20,8 @@ namespace Application.Activities
             public Handler(DataContext context)
                 => _context = context;
 
-            async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request, CancellationToken cancellationToken)
+            async Task<List<Activity>> IRequestHandler<Query, List<Activity>>.Handle(Query request,
+                                                                                     CancellationToken cancellationToken)
             {
                 return await _context.Activities
                                      .AsNoTracking()
