@@ -5,7 +5,6 @@ using Application.Activities;
 using Domain;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using static Application.Activities.Create;
 
 namespace API.Controllers
 {
@@ -27,9 +26,17 @@ namespace API.Controllers
         public async Task<IActionResult> CreateActivity(Activity activity)
             => Ok(await Mediator.Send(new Create.Command() { Activity = activity }));
 
-        [HttpPut]
+        [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> UpdateActivity(Activity activity)
-            => Ok(await Mediator.Send(new Update.Command() { Activity = activity }));
+        public async Task<IActionResult> UpdateActivity(Guid id, Activity activity)
+        {
+            activity.Id = id;
+            return Ok(await Mediator.Send(new Update.Command() { Activity = activity }));
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> DeleteActivity(Guid id)
+            => Ok(await Mediator.Send(new Delete.Command() { Id = id }));
     }
 }
