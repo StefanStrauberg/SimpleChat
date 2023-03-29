@@ -1,4 +1,5 @@
 using System;
+using Application.Activities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<DataContext>(options => {
     options.UseSqlite(builder.Configuration
                              .GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(List).Assembly));
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

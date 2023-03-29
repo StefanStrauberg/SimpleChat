@@ -1,32 +1,35 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Activities;
 using Domain;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Persistence;
+using static Application.Activities.Create;
 
 namespace API.Controllers
 {
     public class ActivitiesController : BaseApiController
     {
-        private readonly DataContext _context;
-        
-        public ActivitiesController(DataContext context)
-        {
-            _context = context;
-        }
-
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities()
-        {
-            return await _context.Activities.ToListAsync();
-        }
+        [ProducesResponseType(typeof(List<Activity>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetActivities()
+            => Ok(await Mediator.Send(new List.Query()));
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Activity>> GetActivity(Guid id)
-        {
-            return await _context.Activities.FindAsync(id);
-        }
+        [ProducesResponseType(typeof(List<Activity>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetActivity(Guid id)
+            => Ok(await Mediator.Send(new Details.Query(){ Id = id }));
+
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CreateActivity(Activity activity)
+            => Ok(await Mediator.Send(new Create.Command() { Activity = activity }));
+
+        [HttpPut]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateActivity(Activity activity)
+            => Ok(await Mediator.Send(new Update.Command() { Activity = activity }));
     }
 }
