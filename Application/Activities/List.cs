@@ -18,19 +18,17 @@ namespace Application.Activities
             readonly DataContext _context;
             readonly IMapper _mapper;
             
-            public Handler(DataContext context,
-                           IMapper mapper)
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
                 _mapper = mapper;
             }
 
-            async Task<List<ActivityDto>> IRequestHandler<Query, List<ActivityDto>>.Handle(Query request,
-                                                                                     CancellationToken cancellationToken)
+            async Task<List<ActivityDto>> IRequestHandler<Query, List<ActivityDto>>.Handle(Query request, CancellationToken ct)
             {
                 var activities =  await _context.Activities
                                                 .AsNoTracking()
-                                                .ToListAsync(cancellationToken);
+                                                .ToListAsync(ct);
                 var activityDtos = _mapper.Map<List<ActivityDto>>(activities);
                 return activityDtos;
             }

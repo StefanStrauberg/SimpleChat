@@ -1,14 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Domain;
 
 namespace Persistence
 {
     public class Seed
     {
-        public static async Task SeedData(DataContext context)
+        public static void SeedData(DataContext context)
         {
             if (context.Activities.Any()) return;
             
@@ -106,8 +105,8 @@ namespace Persistence
                 }
             };
 
-            await context.Activities.AddRangeAsync(activities);
-            await context.SaveChangesAsync();
+            context.Activities.AddRangeAsync(activities);
+            context.SaveChanges();
         }
     }
 }

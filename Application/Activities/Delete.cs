@@ -19,18 +19,16 @@ namespace Application.Activities
             public Handler(DataContext context)
                 => _context = context;
                 
-            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request,
-                                                                   CancellationToken cancellationToken)
+            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request, CancellationToken ct)
             {
                 var activityToDelete = await _context.Activities
                                                      .AsNoTracking()
-                                                     .FirstOrDefaultAsync(x => x.Id == request.Id,
-                                                                          cancellationToken);
+                                                     .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
                 // FIXME
                 if (activityToDelete is null)
                     return Unit.Value;
                 _context.Activities.Remove(activityToDelete);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(ct);
                 return Unit.Value;
             }
         }

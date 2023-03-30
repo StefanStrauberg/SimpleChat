@@ -18,24 +18,21 @@ namespace Application.Activities
             readonly DataContext _context;
             readonly IMapper _mapper;
             
-            public Handler(DataContext context,
-                           IMapper mapper)
+            public Handler(DataContext context, IMapper mapper)
             {
                 _context = context;
                 _mapper = mapper;
             }
 
-            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request,
-                                                                   CancellationToken cancellationToken)
+            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request, CancellationToken ct)
             {
                 var activityToUpdate = await _context.Activities
-                                                     .FirstOrDefaultAsync(x => x.Id == request.Id,
-                                                                          cancellationToken);
+                                                     .FirstOrDefaultAsync(x => x.Id == request.Id, ct);
                 // FIXME
                 if (activityToUpdate is null)
                     return Unit.Value;
                 _mapper.Map(request.UpdateActivityDto, activityToUpdate);
-                await _context.SaveChangesAsync(cancellationToken);
+                await _context.SaveChangesAsync(ct);
                 return Unit.Value;
             }
         }
