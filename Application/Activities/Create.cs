@@ -3,28 +3,34 @@ using MediatR;
 using Persistence;
 using System.Threading;
 using Domain;
+using System;
+using AutoMapper;
+using Application.Models;
 
 namespace Application.Activities
 {
     public class Create
     {
-        public class Command : IRequest<Unit> 
-        {
-            public Activity Activity { get; set; }
-        }
+        public record Command(CreateActivityDto createActivityDto) : IRequest<Unit>;
 
         internal class Handler : IRequestHandler<Command, Unit>
         {
             readonly DataContext _context;
+            readonly IMapper _mapper;
             
-            public Handler(DataContext context)
-                => _context = context;
+            public Handler(DataContext context,
+                           IMapper mapper)
+            {
+                _context = context;
+                _mapper = mapper;
+            }
 
             async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request,
                                                                    CancellationToken cancellationToken)
             {
-                _context.Activities.Add(request.Activity);
-                await _context.SaveChangesAsync();
+                var activityToCreate = _mapper.Map<Activity>(request.createActivityDto);
+                _context.Activities.Add(activityToCreate);
+                await _context.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }
         }

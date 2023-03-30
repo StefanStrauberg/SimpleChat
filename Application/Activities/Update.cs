@@ -1,7 +1,8 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Models;
 using AutoMapper;
-using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -10,10 +11,7 @@ namespace Application.Activities
 {
     public class Update
     {
-        public class Command : IRequest<Unit>
-        {
-            public Activity Activity { get; set; }
-        }
+        public record Command(Guid Id, UpdateActivityDto UpdateActivityDto) : IRequest<Unit>;
 
         internal class Handler : IRequestHandler<Command, Unit>
         {
@@ -30,11 +28,14 @@ namespace Application.Activities
             async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request,
                                                                    CancellationToken cancellationToken)
             {
-                var activity = await _context.Activities
-                                             .FirstOrDefaultAsync(x => x.Id == request.Activity
-                                                                                      .Id);
-                _mapper.Map(request.Activity, activity);
-                await _context.SaveChangesAsync();
+                var activityToUpdate = await _context.Activities
+                                                     .FirstOrDefaultAsync(x => x.Id == request.Id,
+                                                                          cancellationToken);
+                // FIXME
+                if (activityToUpdate is null)
+                    return Unit.Value;
+                _mapper.Map(request.UpdateActivityDto, activityToUpdate);
+                await _context.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }
         }

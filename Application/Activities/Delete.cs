@@ -10,10 +10,7 @@ namespace Application.Activities
 {
     public class Delete
     {
-        public class Command : IRequest<Unit>
-        {
-            public Guid Id { get; set; }
-        }
+        public record Command(Guid Id) : IRequest<Unit>;
 
         internal class Handler : IRequestHandler<Command, Unit>
         {
@@ -27,10 +24,13 @@ namespace Application.Activities
             {
                 var activityToDelete = await _context.Activities
                                                      .AsNoTracking()
-                                                     .FirstOrDefaultAsync(x => x.Id == request.Id);
-                // TODO if null
+                                                     .FirstOrDefaultAsync(x => x.Id == request.Id,
+                                                                          cancellationToken);
+                // FIXME
+                if (activityToDelete is null)
+                    return Unit.Value;
                 _context.Activities.Remove(activityToDelete);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
                 return Unit.Value;
             }
         }
