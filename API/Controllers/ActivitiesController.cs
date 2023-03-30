@@ -29,11 +29,13 @@ namespace API.Controllers
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateActivity(Guid id, UpdateActivityDto dto, CancellationToken ct)
             => Ok(await Mediator.Send(new Update.Command(id, dto), ct));
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteActivity(Guid id, CancellationToken ct)
             => Ok(await Mediator.Send(new Delete.Command(id), ct));
     }
