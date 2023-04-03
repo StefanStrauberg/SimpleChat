@@ -19,10 +19,10 @@ function App() {
   useEffect(() => {
     agent.Activities.list().then((response) => {
       let activities: Activity[] = [];
-      response.forEach(activity => {
-        activity.date = activity.date.split('T')[0];
+      response.forEach((activity) => {
+        activity.date = activity.date.split("T")[0];
         activities.push(activity);
-      })
+      });
       setActivities(activities);
       setLoading(false);
     });
@@ -49,19 +49,22 @@ function App() {
     setSubmiting(true);
     if (activity.id) {
       agent.Activities.update(activity).then(() => {
-        setActivities([...activites.filter(x => x.id !== activity.id), activity]);
+        setActivities([
+          ...activites.filter((x) => x.id !== activity.id),
+          activity,
+        ]);
         setSelectedActivity(activity);
         setEditMode(false);
         setSubmiting(false);
-      })
+      });
     } else {
       activity.id = uuid();
       agent.Activities.create(activity).then(() => {
         setActivities([...activites, activity]);
         setSelectedActivity(activity);
-          setEditMode(false);
-          setSubmiting(false);
-      })
+        setEditMode(false);
+        setSubmiting(false);
+      });
     }
   }
 
@@ -69,7 +72,7 @@ function App() {
     setActivities([...activites.filter((x) => x.id !== id)]);
   }
 
-  if (loading) return <LoadingComponent content="lLoading app"/>
+  if (loading) return <LoadingComponent content="lLoading app" />;
 
   return (
     <Fragment>
@@ -85,6 +88,7 @@ function App() {
           closeForm={handleFormClose}
           createOrEditActivity={handleCreateOrEditActivity}
           deleteActivity={handleDeleteActivity}
+          submiting={submiting}
         />
       </Container>
     </Fragment>
