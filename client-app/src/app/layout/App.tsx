@@ -69,7 +69,11 @@ function App() {
   }
 
   function handleDeleteActivity(id: string) {
-    setActivities([...activites.filter((x) => x.id !== id)]);
+    setSubmiting(true);
+    agent.Activities.delete(id).then(() => {
+      setActivities([...activites.filter((x) => x.id !== id)]);
+      setSubmiting(false);
+    })
   }
 
   if (loading) return <LoadingComponent content="lLoading app" />;
