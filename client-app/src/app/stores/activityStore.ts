@@ -52,7 +52,7 @@ export default class ActivityStore {
 
   createActivity = async (activity: Activity) => {
     this.loading = true;
-    activity.id == uuid();
+    activity.id = uuid();
     try {
       await agent.Activities.create(activity);
       runInAction(() => {
@@ -74,7 +74,10 @@ export default class ActivityStore {
     try {
       await agent.Activities.update(activity);
       runInAction(() => {
-        this.activities = [...this.activities.filter(x => x.id !== activity.id), activity];
+        this.activities = [
+          ...this.activities.filter((x) => x.id !== activity.id),
+          activity,
+        ];
         this.selectedActivity = activity;
         this.editMode = false;
         this.loading = false;
@@ -82,7 +85,24 @@ export default class ActivityStore {
     } catch (error) {
       console.log(error);
       runInAction(() => {
-        this.loading = true;
+        this.loading = false;
+      });
+    }
+  };
+
+  deleteActivity = async (id: string) => {
+    this.loading = true;
+    try {
+      await agent.Activities.delete(id);
+      runInAction(() => {
+        this.activities = [...this.activities.filter((x) => x.id !== id)];
+        if (this.selectedActivity?.id === id) this.cancelSelectedActivity();
+        this.loading = false;
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction(() => {
+        this.loading = false;
       });
     }
   };
