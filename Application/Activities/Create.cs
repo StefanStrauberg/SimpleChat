@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using MediatR;
 using Persistence;
@@ -10,9 +11,9 @@ namespace Application.Activities
 {
     public class Create
     {
-        public record Command(CreateActivityDto createActivityDto) : IRequest<Unit>;
+        public record Command(CreateActivityDto createActivityDto) : IRequest<Guid>;
 
-        internal class Handler : IRequestHandler<Command, Unit>
+        internal class Handler : IRequestHandler<Command, Guid>
         {
             readonly DataContext _context;
             readonly IMapper _mapper;
@@ -23,12 +24,12 @@ namespace Application.Activities
                 _mapper = mapper;
             }
 
-            async Task<Unit> IRequestHandler<Command, Unit>.Handle(Command request, CancellationToken ct)
+            async Task<Guid> IRequestHandler<Command, Guid>.Handle(Command request, CancellationToken ct)
             {
                 var activityToCreate = _mapper.Map<Activity>(request.createActivityDto);
                 _context.Activities.Add(activityToCreate);
                 await _context.SaveChangesAsync(ct);
-                return Unit.Value;
+                return activityToCreate.Id;
             }
         }
     }

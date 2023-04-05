@@ -23,7 +23,7 @@ namespace API.Controllers
             => Ok(await Mediator.Send(new Details.Query(id), ct));
 
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(Guid), StatusCodes.Status200OK)]
         public async Task<IActionResult> CreateActivity(CreateActivityDto dto, CancellationToken ct)
             => Ok(await Mediator.Send(new Create.Command(dto), ct));
 

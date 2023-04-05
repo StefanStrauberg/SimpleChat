@@ -8,7 +8,7 @@ export default observer(function ActivityForm() {
   const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore;
   const initialState = selectedActivity ?? {
     id: "",
-    title: "Ahuet",
+    title: "",
     description: "",
     category: "",
     date: "",
